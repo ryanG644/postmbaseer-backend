@@ -1,20 +1,43 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
-const OpenAI = require("openai");
-
-const app = express();
-app.use(cors());
-app.use(express.json());
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
 app.post("/api/oracle", async (req, res) => {
-  const { name, job, status } = req.body;
+  const { name, job, status, company, location } = req.body;
 
-  const prompt = `You're a sarcastic, clever, yet weirdly accurate Oracle for MBA students. A student named ${name} wants to become a ${job}, and they're currently ${status}. Give a funny and insightful prediction about their future. Include a made-up job success probability and one joke.`;
+  let jobContext = job;
+  if (company) {
+    jobContext += ` at ${company}`;
+  }
+  if (location) {
+    jobContext += ` in ${location}`;
+  }
+
+  const gradYear = "2025"; // Fixed for now
+  const basePrompt = `
+You are a brutally honest, hilarious, and weirdly insightful Oracle for MBA students.
+You MUST respond in this structure:
+
+🎯 Probability: (give a percentage probability)
+🧠 Explanation: (1-2 sentence reason behind the probability)
+📜 Narrative Prediction: (funny, sarcastic but useful paragraph)
+🎯 Tagline: ("P.S. GPA doesn't matter bro." or something similar)
+
+Context:
+- Name: ${name}
+- Job/Target Job: ${job}
+- Company/Location (optional): ${company || "N/A"} / ${location || "N/A"}
+- Status: ${status}
+- Graduation Year: ${gradYear}
+- Assume student is graduating from Simon Business School, University of Rochester.
+
+Tone:
+- Blend humor + a weird amount of realistic career advice.
+- Reference industry realities if possible (e.g., tech layoffs, consulting burnout, etc.)
+- Be both brutal and encouraging.
+
+Special Rule:
+- If Status is "Seeking employment", probability is for Landing a Suitable Role.
+- If Status is "Accepted an offer" or "Considering an offer", probability is for Success in the Role.
+- If Starting Venture, probability is Success of the Startup.
+- If Taking Time Off, probability is Career Stability after 1 year.
+`;
 
   try {
     const completion = await openai.chat.completions.create({
@@ -22,11 +45,11 @@ app.post("/api/oracle", async (req, res) => {
       messages: [
         {
           role: "system",
-          content: "You are a hilarious and brutally honest MBA career oracle."
+          content: "You are a brutally honest MBA career Oracle."
         },
         {
           role: "user",
-          content: prompt
+          content: basePrompt
         }
       ]
     });
@@ -39,5 +62,3 @@ app.post("/api/oracle", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🔮 Oracle backend running on port ${PORT}`));
