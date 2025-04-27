@@ -3,7 +3,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { Configuration, OpenAIApi } = require("openai");
+const OpenAI = require("openai");
 
 require("dotenv").config(); // To use OPENAI_API_KEY from .env
 
@@ -15,10 +15,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // OpenAI setup
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
+
 
 // API route
 app.post("/api/oracle", async (req, res) => {
