@@ -83,30 +83,4 @@ User Context:
 Tone: Encouraging realism, witty but supportive. Max 200 words.
 `;
 
-    // Call OpenAI
-    const gptResponse = await openai.createChatCompletion({
-      model: "gpt-4",
-      messages: [
-        { role: "system", content: basePrompt },  // << system role gets your full dynamic basePrompt
-        { role: "user", content: `Predict based on the user's context above.` },
-      ],
-      temperature: 0.7,
-      max_tokens: 800,
-    });
-
-
-    const answer = gptResponse.data.choices[0].message.content.trim();
-
-    res.json({ answer });
-  } catch (error) {
-    console.error("Error in /api/oracle:", error.message);
-    res.status(500).json({ answer: "⚠️ The Oracle encountered an error. Please try again later." });
-  }
-});
-
-// Start server
-app.listen(PORT, () => {
-  console.log(`PostMBASeer server running on port ${PORT}`);
-});
-
-
+    
