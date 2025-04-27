@@ -87,12 +87,13 @@ Tone: Encouraging realism, witty but supportive. Max 200 words.
     const gptResponse = await openai.createChatCompletion({
       model: "gpt-4",
       messages: [
-        { role: "system", content: "You are PostMBASeer, a brutally honest and witty Oracle for MBA students." },
-        { role: "user", content: basePrompt },
+        { role: "system", content: basePrompt },  // << system role gets your full dynamic basePrompt
+        { role: "user", content: `Predict based on the user's context above.` },
       ],
       temperature: 0.7,
       max_tokens: 800,
     });
+
 
     const answer = gptResponse.data.choices[0].message.content.trim();
 
