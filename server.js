@@ -98,9 +98,10 @@ Tone: Encouraging realism, witty but supportive. Max 200 words.
 
     res.json({ answer });
   } catch (error) {
-    console.error("Error in /api/oracle:", error.message);
-    res.status(500).json({ answer: "⚠️ The Oracle encountered an error. Please try again later." });
-  }
+  console.error("Error in /api/oracle:", error.message);
+  res.status(500).json({ answer: "⚠️ The Oracle encountered an error. Please try again later." });
+}
+
 });
 
 // Start server
