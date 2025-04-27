@@ -19,7 +19,6 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-
 // API route
 app.post("/api/oracle", async (req, res) => {
   const { name, job, industry, status, company, location } = req.body;
@@ -84,7 +83,7 @@ Tone: Encouraging realism, witty but supportive. Max 200 words.
 `;
 
     // Call OpenAI
-    const gptResponse = await openai.createChatCompletion({
+    const gptResponse = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
         { role: "system", content: basePrompt },
@@ -94,19 +93,16 @@ Tone: Encouraging realism, witty but supportive. Max 200 words.
       max_tokens: 800,
     });
 
-    const answer = gptResponse.data.choices[0].message.content.trim();
+    const answer = gptResponse.choices[0].message.content.trim();
 
     res.json({ answer });
   } catch (error) {
-  console.error("Error in /api/oracle:", error.message);
-  res.status(500).json({ answer: "⚠️ The Oracle encountered an error. Please try again later." });
-}
-
+    console.error("Error in /api/oracle:", error.message);
+    res.status(500).json({ answer: "⚠️ The Oracle encountered an error. Please try again later." });
+  }
 });
 
 // Start server
 app.listen(PORT, () => {
   console.log(`PostMBASeer server running on port ${PORT}`);
 });
-
-    
