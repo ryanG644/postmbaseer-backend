@@ -21,7 +21,7 @@ const openai = new OpenAI({
 
 // API route
 app.post("/api/oracle", async (req, res) => {
-  const { name, job, industry, status, company, location } = req.body;
+  const { name, job, industry, status, company, location, bSchool } = req.body;
 
   try {
     let jobContext = job;
@@ -68,7 +68,8 @@ User Context:
 - Industry: ${industry}
 - Status: ${status}
 - Graduation Year: ${gradYear}
-- University: Simon Business School, University of Rochester.
+- University: ${bSchool}.
+
 
 Tone: Realistic, data-informed, sharp, and witty but never misleading.
 Max response length: 200 words.
